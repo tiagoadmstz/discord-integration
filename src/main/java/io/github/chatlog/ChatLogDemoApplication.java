@@ -22,10 +22,13 @@ public class ChatLogDemoApplication {
     @ConfigurationProperties(value = "discord-api")
     public DiscordApi discordApiConfiguration() {
         DiscordApi discordApi = new DiscordApiBuilder()
-                .setToken("ODIzNzA1NDI0NDU1Nzk0NzE4.YFktdA.J3ubIcCBsOUuj7cH6eGbqiViSL0")
+                .setToken("token do bot")
                 .login()
                 .join();
         discordApi.addMessageCreateListener(msg -> {
+            System.out.println(String.format("Send by %s to %s",
+                    msg.getMessageAuthor().getDisplayName(),
+                    msg.getMessage().getMentionedUsers().get(0).getName()));
             System.out.println(msg.getMessage().getContent());
         });
         return discordApi;
