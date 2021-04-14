@@ -1,6 +1,17 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: default
   datasource:
     driver-class: org.h2.Driver
     url: jdbc:h2:~/test
     username: sa
     password:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        hbm2ddl.auto: create-drop
+        formatSql: true
+    show-sql: true
