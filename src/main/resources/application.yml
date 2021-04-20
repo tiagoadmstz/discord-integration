@@ -3,6 +3,8 @@ spring:
     allow-bean-definition-overriding: true
   profiles:
     active: default
+  config:
+    additional-location: ./config
   datasource:
     driver-class: org.h2.Driver
     url: jdbc:h2:~/test
