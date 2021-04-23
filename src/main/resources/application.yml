@@ -6,14 +6,14 @@ spring:
   config:
     additional-location: ./config
   datasource:
-    driver-class: org.h2.Driver
-    url: jdbc:h2:~/test
-    username: sa
-    password:
+    driver-class: org.postgresql.Driver
+    url: jdbc:postgresql://analytics.pbl.tec.br:8082/db-micros-discord
+    username: micros-discord
+    password: YGUYjhbgYTF77654E44tfhfgg
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-        hbm2ddl.auto: create-drop
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        hbm2ddl.auto: create
         formatSql: true
     show-sql: true
