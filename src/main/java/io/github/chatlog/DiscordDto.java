@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -28,14 +29,18 @@ public class DiscordDto implements Serializable {
     private Date dateLog;
     @Column(name = "AUTHOR")
     private String author;
-    @Column(name = "DESTINATARY")
+    @Column(name = "DESTINATARY", columnDefinition = "text")
     private String destinatary;
-    @Column(name = "MESSAGE")
+    @Column(name = "MESSAGE", columnDefinition = "text")
     private String message;
-    @Column(name = "CHANNEL")
-    private String channel;
-    @Column(name = "SERVER")
-    private String server;
+    @Column(name = "CHANNEL_ID")
+    private String channelId;
+    @Column(name = "CHANNEL_NAME")
+    private String channelName;
+    @Column(name = "SERVER_ID")
+    private String serverId;
+    @Column(name = "SERVER_NAME")
+    private String serverName;
     @Transient
     private Message discordMessage;
 
@@ -43,21 +48,29 @@ public class DiscordDto implements Serializable {
         this.discordMessage = discordMessage;
         this.dateLog = new Date();
         this.author = discordMessage.getAuthor().getDisplayName();
-        this.destinatary = getMentionedUser();
-        this.message = discordMessage.getContent().replaceAll("<@!.*>", "");
-        this.channel = discordMessage.getChannel().getIdAsString();
-        this.server = discordMessage.getServer().get().getName();
+        this.destinatary = getMentionedUsers();
+        this.message = disgestMentionedUser();
+        this.channelId = discordMessage.getChannel().getIdAsString();
+        this.channelName = discordMessage.getServerTextChannel().get().getName();
+        this.serverId = discordMessage.getServer().get().getIdAsString();
+        this.serverName = discordMessage.getServer().get().getName();
     }
 
     @Transient
-    private String getMentionedUser() {
-        String destinatary = "";
-        List<User> mentionedUsers = discordMessage.getMentionedUsers();
-        if (mentionedUsers != null) {
-            if (mentionedUsers.size() > 0) {
-                destinatary = mentionedUsers.get(0).getName();
-            }
+    private String getMentionedUsers() {
+        if(discordMessage.getMentionedUsers().isEmpty()){
+            return "Todos";
         }
-        return destinatary;
+        return discordMessage.getMentionedUsers().stream().map(User::getName).collect(Collectors.joining(";"));
     }
+
+    @Transient
+    private String disgestMentionedUser(){
+        String digestedMessage = discordMessage.getContent();
+        for(User user : discordMessage.getMentionedUsers()){
+            digestedMessage = digestedMessage.replaceAll("\\<\\@\\!" + user.getIdAsString() + "\\>", user.getName());
+        }
+        return digestedMessage.replaceAll("<@!.*>", "");
+    }
+
 }

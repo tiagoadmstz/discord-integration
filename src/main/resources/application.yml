@@ -9,7 +9,7 @@ spring:
     driver-class: org.postgresql.Driver
     url: jdbc:postgresql://analytics.pbl.tec.br:8082/db-micros-discord
     username: micros-discord
-    password: 123
+    password: YGUYjhbgYTF77654E44tfhfgg
   jpa:
     properties:
       hibernate:
