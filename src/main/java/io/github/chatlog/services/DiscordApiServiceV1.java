@@ -1,20 +1,21 @@
-package io.github.chatlog;
+package io.github.chatlog.services;
 
+import io.github.chatlog.models.DiscordDto;
+import io.github.chatlog.repositories.DiscordRepository;
 import org.javacord.api.DiscordApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
-public class DiscordApiService {
+//@Service
+public class DiscordApiServiceV1 {
 
-    private Logger logger = LoggerFactory.getLogger(DiscordApiService.class);
+    private Logger logger = LoggerFactory.getLogger(DiscordApiServiceV1.class);
     private DiscordApi discordApi;
     private DiscordRepository discordRepository;
 
-    @Autowired
-    public DiscordApiService(DiscordApi discordApi, DiscordRepository discordRepository) {
+    //@Autowired
+    public DiscordApiServiceV1(DiscordApi discordApi, DiscordRepository discordRepository) {
         logger.info("Initializing Discord Service");
         this.discordApi = discordApi;
         this.discordRepository = discordRepository;
