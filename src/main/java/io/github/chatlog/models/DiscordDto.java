@@ -1,4 +1,4 @@
-package io.github.chatlog;
+package io.github.chatlog.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,6 @@ import org.javacord.api.entity.user.User;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Data

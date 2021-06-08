@@ -17,10 +17,4 @@ spring:
     url: jdbc:h2:~/test
     username: sa
     password:
-
-  host: analytics.pbl.tec.br
-  porta: 8082
-  usuario postgres: micros-discord
-  senha: YGUYjhbgYTF77654E44tfhfgg
-  banco de dados: db-micros-discord
 ```
