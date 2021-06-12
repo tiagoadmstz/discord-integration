@@ -31,7 +31,11 @@ public class DiscordApiServiceV2 {
     }
 
     public boolean getDiscordStatus() {
-        return listenerInstanceControl.isAlive();
+        try {
+            return listenerInstanceControl.isAlive();
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     private void discordListenerInit() {
