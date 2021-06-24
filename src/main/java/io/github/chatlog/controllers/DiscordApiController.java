@@ -1,5 +1,6 @@
 package io.github.chatlog.controllers;
 
+import io.github.chatlog.models.DiscordToken;
 import io.github.chatlog.services.DiscordApiServiceV2;
 import io.github.chatlog.services.DiscordTokenService;
 import io.swagger.annotations.Api;
@@ -7,10 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api("Discord integration endpoints")
 @RestController
@@ -24,8 +22,8 @@ public class DiscordApiController {
 
     @PostMapping("/token")
     @ApiOperation(value = "Integration service activation token", consumes = "String")
-    public ResponseEntity tokenUpdate(String token) {
-        ResponseEntity responseEntity = tokenService.saveToken(token);
+    public ResponseEntity tokenUpdate(@RequestBody DiscordToken token) {
+        ResponseEntity responseEntity = tokenService.saveToken(token.getToken());
         discordApiService.discordInit();
         return responseEntity;
     }

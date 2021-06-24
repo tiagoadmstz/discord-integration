@@ -5,6 +5,7 @@ import io.github.chatlog.models.DiscordDto;
 import io.github.chatlog.models.DiscordToken;
 import io.github.chatlog.repositories.DiscordRepository;
 import io.github.chatlog.repositories.DiscordTokenRepository;
+import io.github.chatlog.utils.InstanceControl;
 import org.javacord.api.DiscordApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,20 +20,22 @@ public class DiscordApiServiceV2 {
     private DiscordRepository discordRepository;
     @Autowired
     private DiscordTokenRepository tokenRepository;
-    private Thread listenerInstanceControl;
+    private final String THREAD_NAME = "discord-listener";
 
     public DiscordApiServiceV2() {
         logger.info("Initializing Discord Service");
     }
 
     public void discordInit() {
-        listenerInstanceControl = new Thread(this::discordListenerInit, "discord-listener");
-        listenerInstanceControl.start();
+        if(InstanceControl.getInstance(THREAD_NAME) == null){
+            InstanceControl.putInstance(THREAD_NAME, new Thread(this::discordListenerInit, THREAD_NAME));
+            InstanceControl.<Thread>getInstance(THREAD_NAME).start();
+        }
     }
 
     public boolean getDiscordStatus() {
         try {
-            return listenerInstanceControl.isAlive();
+            return InstanceControl.getInstance("discordApi") != null;
         } catch (Exception ex) {
             return false;
         }
@@ -53,6 +56,7 @@ public class DiscordApiServiceV2 {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+            InstanceControl.putInstance("discordApi", null);
             logger.info("Discord listener not initialized");
         }
     }

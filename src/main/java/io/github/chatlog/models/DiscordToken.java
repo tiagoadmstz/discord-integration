@@ -1,5 +1,6 @@
 package io.github.chatlog.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ public class DiscordToken implements Serializable {
 
     private static final long serialVersionUID = -8972494130465697316L;
     @Id
+    @JsonIgnore
     private final Long id = 1L;
     @Column(name = "TOKEN")
     private String token;
