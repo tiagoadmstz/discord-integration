@@ -16,7 +16,9 @@ public class ChatLogDemoApplication {
     private DiscordApiServiceV2 discordApiService;
 
     public static void main(String[] args) {
-        SpringApplication.run(ChatLogDemoApplication.class, args);
+        SpringApplication.run(ChatLogDemoApplication.class, args)
+                .getBean(DiscordApiServiceV2.class)
+                .discordInit();
     }
 
 }

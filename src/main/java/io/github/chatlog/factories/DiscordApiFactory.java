@@ -6,10 +6,10 @@ import org.javacord.api.DiscordApiBuilder;
 
 public class DiscordApiFactory {
 
-    private final String DISCORDAPI = "discordApi";
+    public static final String DISCORDAPI = "discordApi";
 
     public DiscordApi discordApiV1(String token) {
-        if (token != null && InstanceControl.getInstance(DISCORDAPI) == null) {
+        if (token != null && !getIntanceStatus()) {
             DiscordApi discordApi = new DiscordApiBuilder()
                     .setToken(token)
                     .login()
@@ -18,6 +18,14 @@ public class DiscordApiFactory {
             return discordApi;
         }
         return InstanceControl.getInstance(DISCORDAPI);
+    }
+
+    private boolean getIntanceStatus() {
+        try {
+            return "online".equalsIgnoreCase(InstanceControl.<DiscordApi>getInstance(DISCORDAPI).getStatus().getStatusString());
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
 }

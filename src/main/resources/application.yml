@@ -5,11 +5,6 @@ spring:
     active: default
   config:
     additional-location: ./config
-  datasource:
-    driver-class: org.postgresql.Driver
-    url: jdbc:postgresql://analytics.pbl.tec.br:8082/db-micros-discord
-    username: micros-discord
-    password: YGUYjhbgYTF77654E44tfhfgg
   jpa:
     properties:
       hibernate:

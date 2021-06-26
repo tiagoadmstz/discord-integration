@@ -16,16 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class DiscordApiController {
 
     @Autowired
-    private DiscordTokenService tokenService;
-    @Autowired
     private DiscordApiServiceV2 discordApiService;
 
     @PostMapping("/token")
     @ApiOperation(value = "Integration service activation token", consumes = "String")
     public ResponseEntity tokenUpdate(@RequestBody DiscordToken token) {
-        ResponseEntity responseEntity = tokenService.saveToken(token.getToken());
-        discordApiService.discordInit();
-        return responseEntity;
+        discordApiService.discordInit(token.getToken());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/status")

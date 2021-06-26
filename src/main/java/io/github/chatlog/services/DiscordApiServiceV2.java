@@ -7,6 +7,7 @@ import io.github.chatlog.repositories.DiscordRepository;
 import io.github.chatlog.repositories.DiscordTokenRepository;
 import io.github.chatlog.utils.InstanceControl;
 import org.javacord.api.DiscordApi;
+import org.javacord.api.entity.user.UserStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,32 +21,39 @@ public class DiscordApiServiceV2 {
     private DiscordRepository discordRepository;
     @Autowired
     private DiscordTokenRepository tokenRepository;
-    private final String THREAD_NAME = "discord-listener";
+    @Autowired
+    private DiscordTokenService tokenService;
+    private final String SERVICE_NAME = "discord-listener";
 
     public DiscordApiServiceV2() {
         logger.info("Initializing Discord Service");
     }
 
-    public void discordInit() {
-        if(InstanceControl.getInstance(THREAD_NAME) == null){
-            InstanceControl.putInstance(THREAD_NAME, new Thread(this::discordListenerInit, THREAD_NAME));
-            InstanceControl.<Thread>getInstance(THREAD_NAME).start();
-        }
+    public void discordInit(){
+        this.discordInit(tokenRepository.findById(1L).orElse(new DiscordToken("")).getToken());
+    }
+
+    public void discordInit(String token) {
+        InstanceControl.putInstance(SERVICE_NAME, this);
+        discordListenerInit(token);
     }
 
     public boolean getDiscordStatus() {
+        String statusString = "";
+        DiscordApi discordApi = InstanceControl.getInstance(DiscordApiFactory.DISCORDAPI);
         try {
-            return InstanceControl.getInstance("discordApi") != null;
+            statusString = discordApi.getStatus().getStatusString();
         } catch (Exception ex) {
-            return false;
         }
+        return "online".equalsIgnoreCase(statusString);
     }
 
-    private void discordListenerInit() {
+    private void discordListenerInit(String token) {
         try {
             DiscordApiFactory discordApiFactory = new DiscordApiFactory();
             logger.info("Initializing Discord Listener");
-            DiscordApi discordApi = discordApiFactory.discordApiV1(tokenRepository.findById(1L).orElse(new DiscordToken("")).getToken());
+            String token1 = tokenRepository.findById(1L).orElse(new DiscordToken("")).getToken();
+            DiscordApi discordApi = discordApiFactory.discordApiV1(token1 == null ? token : token1);
             if (discordApi != null) {
                 discordApi.addMessageCreateListener(event -> {
                     DiscordDto discordDto = new DiscordDto(event.getMessage());
@@ -54,6 +62,8 @@ public class DiscordApiServiceV2 {
                     logger.info(discordDto.toString());
                 });
             }
+            tokenService.saveToken(token);
+            logger.info("Discord Listener Initialized");
         } catch (Exception ex) {
             ex.printStackTrace();
             InstanceControl.putInstance("discordApi", null);
